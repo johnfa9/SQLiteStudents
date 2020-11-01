@@ -7,7 +7,6 @@ import com.ga.sqlliteStudents.database.DatabaseHelper;
 import com.ga.sqlliteStudents.database.model.Student;
 import com.ga.sqlliteStudents.utils.MyDividerItemDecoration;
 import com.ga.sqlliteStudents.utils.RecyclerTouchListener;
-import com.ga.sqlliteStudents.R;
 import com.ga.sqlliteStudents.view.StudentsAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -26,15 +25,12 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-//TO DO:
-//Why is snackbar greyed out ?
-
 
 public class MainActivity extends AppCompatActivity {
     private StudentsAdapter mAdapter;
@@ -66,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                showNoteDialog(false, null, -1);  //show new note dialog
+                showStudentDialog(false, null, -1);  //show new note dialog
             }
         });
 
@@ -75,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);  //references recylerView in content_main.xml
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));  //see MyDividerItemDecoration class
+        recyclerView.addItemDecoration(new MyDividerItemDecoration(this,
+                LinearLayoutManager.VERTICAL, 16));  //see MyDividerItemDecoration class
         recyclerView.setAdapter(mAdapter);
         toggleEmptyStudents();
 
@@ -104,10 +101,10 @@ public class MainActivity extends AppCompatActivity {
      * Inserting new note in db
      * and refreshing the list
      */
-    private void createStudent(String student, String grade) {  //******createStudent(String student)
+    private void createStudent(String student, String grade) {
         // inserting note in db and getting
         // newly inserted note id
-        long id = db.insertStudent(student, grade);  //***********db.insertStudent(student)
+        long id = db.insertStudent(student, grade);
 
         // get the newly inserted note from db
         Student n = db.getStudent(id);
@@ -127,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
      * Updating note in db and updating
      * item in the list by its position
      */
-    private void updateStudent(String student, String grade, int position) {  //updateStudent(String student, int position)
+    private void updateStudent(String student, String grade, int position) {
         Student n = studentsList.get(position);
         // updating student text
         n.setStudent(student);
@@ -175,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
-                    showNoteDialog(true, studentsList.get(position), position);  // edit existing note, see method below
+                    // edit existing note, see method below
+                    showStudentDialog(true, studentsList.get(position), position);
                 } else {
                     deleteStudent(position);  //delete an existing note
                 }
@@ -190,15 +188,16 @@ public class MainActivity extends AppCompatActivity {
      * when shouldUpdate=true, it automatically displays old note and changes the
      * button text to UPDATE
      */
-    private void showNoteDialog(final boolean shouldUpdate, final Student student, final int position) {
+    private void showStudentDialog(final boolean shouldUpdate, final Student student,
+                                   final int position) {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(getApplicationContext());
-        View view = layoutInflaterAndroid.inflate(R.layout.student_dialog, null);  //note_dialog.xml has data entry field for note
+        View view = layoutInflaterAndroid.inflate(R.layout.student_dialog, null);
 
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MainActivity.this);
         alertDialogBuilderUserInput.setView(view);
 
         final EditText inputStudent = view.findViewById(R.id.student);
-        final EditText inputGrade = view.findViewById(R.id.grade);  //****************
+        final Spinner inputGrade = view.findViewById(R.id.grade);
 
 
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
@@ -206,11 +205,18 @@ public class MainActivity extends AppCompatActivity {
 
         if (shouldUpdate && student != null) {
             inputStudent.setText(student.getStudent());
-            inputGrade.setText(student.getGrade());  //*********************
+            int val = 0;
+            String StudentGradeString;
+            StudentGradeString = student.getGrade();
+            val = getClassInt(StudentGradeString);  //gets position of spinner as number
+
+            inputGrade.setSelection(val);  //sets the value of the spinner
+
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
-                .setPositiveButton(shouldUpdate ? "update" : "save", new DialogInterface.OnClickListener() {
+                .setPositiveButton(shouldUpdate ? "update" : "save",
+                        new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogBox, int id) {
 
                     }
@@ -230,7 +236,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Show toast message when no text is entered
                 if (TextUtils.isEmpty(inputStudent.getText().toString())) {
-                    Toast.makeText(MainActivity.this, "Enter student!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,
+                            "Enter student!", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     alertDialog.dismiss();
@@ -239,10 +246,12 @@ public class MainActivity extends AppCompatActivity {
                 // check if user updating student
                 if (shouldUpdate && student != null) {
                     // update note by it's id
-                    updateStudent(inputStudent.getText().toString(), inputGrade.getText().toString(), position);
+                    updateStudent(inputStudent.getText().toString(),
+                            inputGrade.getSelectedItem().toString(),position);
                 } else {
-                    // create new student
-                    createStudent(inputStudent.getText().toString(), inputGrade.getText().toString());
+                    // create new student, text of spinner is retrieved
+                    createStudent(inputStudent.getText().toString(),
+                            inputGrade.getSelectedItem().toString());
                 }
             }
         });
@@ -261,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
         //runs automatically
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -284,4 +292,21 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public int getClassInt(String StudentGradeString){
+        if (StudentGradeString.equals("Freshman")) {
+            return 0;
+        }
+        else if (StudentGradeString.equals("Sophomore")) {
+            return 1;
+        }
+        else if (StudentGradeString.equals("Junior")) {
+            return 2;
+        }
+        else if (StudentGradeString.equals("Senior")) {
+            return 3;
+        }
+        return 0;
+    }
+
 }

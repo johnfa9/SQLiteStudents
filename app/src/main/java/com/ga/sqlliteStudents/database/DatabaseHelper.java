@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long insertStudent(String student, String grade) {    //****************** insertStudent(String student )
+    public long insertStudent(String student, String grade) {
         /* ContentValues() is used to define the column name and its data to be stored.
         Here, we are just setting the note value only ignoring `id` and `timestamp`
         as these two will be inserted automatically.
@@ -58,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database access. Calling db.close() closes the connection.
          */
 
-       // Once the note is inserted, the `id` of newly inserted note will be returned.
+       // Once the student is inserted, the `id` of newly inserted note will be returned.
 
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // `id` and `timestamp` will be inserted automatically.
         // no need to add them
         values.put(Student.COLUMN_STUDENT, student);
-        values.put(Student.COLUMN_GRADE, grade);    //*******************
+        values.put(Student.COLUMN_GRADE, grade);
 
 
         // insert row
@@ -136,7 +136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // close db connection
         db.close();
 
-        // return notes list
+        // return students list
         return students;
     }
 
@@ -158,7 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(Student.COLUMN_STUDENT, student.getStudent());
-        values.put(Student.COLUMN_GRADE, student.getGrade());    //****************
+        values.put(Student.COLUMN_GRADE, student.getGrade());
 
         // updating row
         return db.update(Student.TABLE_NAME, values, Student.COLUMN_ID + " = ?",

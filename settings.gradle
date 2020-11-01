@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "SQLLiteNotes"
+rootProject.name = "SQLiteStudents"

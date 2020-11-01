@@ -7,4 +7,10 @@
     <string name="lbl_edit_student_title">Edit Student</string>
     <string name="hint_enter_student">Enter your student!</string>
     <string name="hint_enter_grade">Enter your grade!</string>
+    <string-array name="string_array_grade">
+        <item>Freshman</item>
+        <item>Sophomore</item>
+        <item>Junior</item>
+        <item>Senior</item>
+    </string-array>
 </resources>

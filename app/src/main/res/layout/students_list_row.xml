@@ -37,7 +37,7 @@
         android:textColor="@color/student_list_text"
         android:textSize="@dimen/student_list_text" />
 
-
+    <!--' to add grade '-->
     <TextView
         android:id="@+id/grade"
         android:layout_width="match_parent"

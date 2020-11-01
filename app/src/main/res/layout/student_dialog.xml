@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_margin"
-    android:paddingRight="@dimen/activity_margin"
-    android:paddingTop="@dimen/activity_margin">
+    android:paddingTop="@dimen/activity_margin"
+    android:paddingRight="@dimen/activity_margin">
 
-    <TextView android:id="@+id/dialog_title"
+    <TextView
+        android:id="@+id/dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_10"
@@ -30,15 +31,18 @@
         android:textColorHint="@color/hint_enter_student"
         android:textSize="@dimen/input_new_student" />
 
-    <EditText
+
+    <!--' add a spinner which hold values of grade '-->
+    <Spinner
         android:id="@+id/grade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:background="@android:color/transparent"
+        android:entries="@array/string_array_grade"
         android:gravity="top"
         android:hint="@string/hint_enter_grade"
         android:inputType="textCapSentences"
-        android:lines="4"
         android:textColorHint="@color/hint_enter_student"
         android:textSize="@dimen/input_new_student" />
 
